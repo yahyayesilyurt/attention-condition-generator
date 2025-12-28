@@ -44,30 +44,6 @@ condition = CrossAttention(Q, K, V)
 
 where `E_domain` is a learnable embedding table and the attention mechanism follows the standard Transformer formulation.
 
-## Project Structure
-
-```bash
-attention-condition-generator/
-│
-├── attention_condition_generator/
-│   ├── __init__.py
-│   │
-│   ├── conditioner.py          # Public API: AttentionConditioner
-│   ├── attention.py            # Multi-head cross-attention block
-│   ├── domain_embedding.py     # Learnable domain embeddings
-│   └── utils.py                # (optional) helper utilities
-│
-├── tests/
-│   └── test_shapes.py          # Shape & backward-pass tests
-│
-├── examples/
-│   └── simple_usage.py         # Minimal usage example
-│
-├── requirements.txt
-├── setup.py
-└── README.md
-```
-
 ## Installation
 
 Create and activate a virtual environment (recommended):
@@ -140,3 +116,7 @@ These tests verify:
 - Output shape correctness
 - Domain ID broadcasting
 - Gradient flow through the module
+
+## More Information and Contact
+
+If you would like more details and information, please contact me.

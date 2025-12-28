@@ -68,3 +68,10 @@ Thumbs.db
 # Environment / secrets
 # ===============================
 *.env
+
+result.txt
+SUMMARY.md
+outputs/
+training_config.json
+embeddings/
+checkpoints/
