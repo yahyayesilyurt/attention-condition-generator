@@ -446,7 +446,7 @@ def load_gat_embeddings(path):
     """
     print(f"Loading GAT embeddings from '{path}'...")
     
-    gat_data = torch.load(path)
+    gat_data = torch.load(path, map_location='cpu')
     
     # Extract embeddings dict
     if isinstance(gat_data, dict) and 'embeddings' in gat_data:
@@ -523,7 +523,7 @@ def main():
     
     # ========== Configuration ==========
     config = {
-        'gat_embeddings_path': './embeddings/gat_embeddings.pt',
+        'gat_embeddings_path': './embeddings/gat-wbce-20ep-1neg-1shot.pt',
         'num_heads': 4,          # Number of attention heads
         'dropout': 0.1,          # Dropout rate for regularization
         'batch_size': 128,       # Batch size for training
@@ -556,17 +556,27 @@ def main():
     print(f"{'='*60}\n")
     
     # ========== Train/Val Split ==========
+    indices = torch.randperm(num_samples)
     train_size = int(config['train_split'] * num_samples)
+
+    train_indices = indices[:train_size]
+    val_indices = indices[train_size:]
     
-    train_embeddings = user_embeddings[:train_size]
-    train_labels = domain_labels[:train_size]
+    train_embeddings = user_embeddings[train_indices]
+    train_labels = [domain_labels[i] for i in train_indices]
     
-    val_embeddings = user_embeddings[train_size:]
-    val_labels = domain_labels[train_size:]
+    val_embeddings = user_embeddings[val_indices]
+    val_labels = [domain_labels[i] for i in val_indices]
     
-    print(f"Data split:")
+    print(f"Data split (Random Shuffle):")
     print(f"  Train: {len(train_embeddings)} samples")
     print(f"  Val:   {len(val_embeddings)} samples")
+
+    # Domain distribution in train/val sets 
+    train_movie_count = train_labels.count('movie')
+    val_movie_count = val_labels.count('movie')
+    print(f"  Train Distribution -> Movie: {train_movie_count}, Book: {len(train_labels)-train_movie_count}")
+    print(f"  Val Distribution   -> Movie: {val_movie_count}, Book: {len(val_labels)-val_movie_count}")
     
     # ========== Create Datasets & DataLoaders ==========
     train_dataset = UserEmbeddingDataset(
